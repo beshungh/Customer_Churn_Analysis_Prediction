@@ -1,10 +1,18 @@
-# Bank Customer Churn Prediction using H2O AutoML
+# Bank Customer Churn Prediction
 
-## Project Purpose
+### Project Overview
+ The aim of this project is to predict customer churn for a bank using data analysis and machine learning techniques. This demonstrates the entire process, including data 
+ preprocessing, exploratory data analysis, feature engineering, model building, evaluation, and recommendations.
 
-In the highly competitive banking industry, retaining customers is crucial for maintaining profitability and growth. Customer churn, or the rate at which customers stop doing business with a company, can significantly impact the bottom line. This project aims to leverage advanced machine learning techniques to predict which customers are likely to churn. By understanding and predicting customer behavior, banks can implement targeted interventions to retain valuable customers, thereby reducing churn rates and enhancing customer satisfaction.
+## *Table of Contents*
 
-## Project Overview
+- *[Introduction](#project-summary)*
+- *[Data Analysis](#data-source)*
+- *[Data Preprocessing](#tools-used)*
+- *[Feature Engineering](#importing-csv-files-into-postgresql-using-python-script)*
+- *[Model Building](#setbacks-of-the-python-script)*
+- *[Findings And Recommendations](#entity-relationship-diagram)*
+- *[Conclusion](#creating-database-tables)*
 
 ### Context
 Customer churn is a critical metric for banks, representing the degree of customer inactivity or disengagement over a given period. It can manifest in various ways within the data, such as the recency of account actions or changes in account balance. Understanding the factors that contribute to customer churn allows banks to proactively address issues and improve customer retention strategies.
