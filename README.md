@@ -1,4 +1,4 @@
-# Bank Customer Churn Prediction
+# Bank Customer Churn Analysis and Prediction
 
 ### Project Overview
  The aim of this project is to predict customer churn for a bank using data analysis and machine learning techniques. This demonstrates the entire process, including data 
@@ -7,6 +7,7 @@
 ## *Table of Contents*
 
 - *[Introduction](#project-summary)*
+- *[Project Timeline](#project-timeline)*
 - *[Data Analysis](#data-source)*
 - *[Data Preprocessing](#tools-used)*
 - *[Feature Engineering](#importing-csv-files-into-postgresql-using-python-script)*
@@ -14,35 +15,185 @@
 - *[Findings And Recommendations](#entity-relationship-diagram)*
 - *[Conclusion](#creating-database-tables)*
 
-### Context
-Customer churn is a critical metric for banks, representing the degree of customer inactivity or disengagement over a given period. It can manifest in various ways within the data, such as the recency of account actions or changes in account balance. Understanding the factors that contribute to customer churn allows banks to proactively address issues and improve customer retention strategies.
-
-### Aim
-The primary objectives of this study are to:
-
-- Identify and visualize the key factors that contribute to customer churn.
-- Build a robust prediction model to classify whether a customer is likely to churn.
-- Choose a model that can provide probabilities of churn, helping customer service teams target efforts more effectively.
+### Introduction
+Customer churn refers to the loss of clients or customers. Predicting customer churn helps businesses retain customers by identifying the signs early and taking action to prevent it. In this project, we use a dataset of bank customers to identify and visualize the key factors that contribute to customer churn and build a machine learning model that predicts whether a customer will churn.
 
 ### Project Timeline
 The project will be executed in the following stages:
 
-1. **Data Analysis**: Explore and understand the dataset, identifying trends and patterns related to customer churn.
-2. **Feature Engineering**: Create and select relevant features that will improve the model's predictive power.
-3. **Model Building using ANN**: Develop an Artificial Neural Network (ANN) model to predict customer churn.
-4. **Model Building and Prediction using H2O AutoML**: Utilize H2O AutoML to build and compare multiple machine learning models, selecting the best-performing model for deployment.
+1. **Data Analysis**: Exploring and understanding the dataset, identifying trends and patterns related to customer churn.
+2. **Data Processing**: Collecting, transformating, and organizing the raw data into a meaningful and useful format.
+3. **Feature Engineering**: Creating and selecting relevant features that will improve the model's predictive power.
+4. **Model Building using ANN**: Develop an Artificial Neural Network (ANN) model to predict customer churn.
 
-### Model Building and Prediction
+### Data Analysis
+#### Plotting Pie Chart
 
-#### The Sequential Model
-A Sequential model is a type of neural network model that is appropriate for a simple stack of layers, where each layer has exactly one input tensor and one output tensor. This model is straightforward to implement and is ideal for linear topologies. However, it is not suitable for complex models with multiple inputs or outputs, layer sharing, or non-linear topologies (such as residual connections or multi-branch models).
+```python
+# Defining labels for the pie chart representing the two categories: 'Exited (Churned)' and 'Retained'
+pie_labels = 'Exited (Churned)', 'Retained'
 
-#### H2O AutoML
-H2O is an open-source, distributed, in-memory machine learning platform that scales linearly. H2O supports a wide range of statistical and machine learning algorithms, including gradient boosted machines, generalized linear models, and deep learning. H2O AutoML automates the process of training and tuning a large selection of models, providing an easy-to-use interface for quickly finding the best model for your data.
+# Counting the number of customers who have exited (churned) and those who have been retained
+pie_sizes = [
+    df.Exited[df['Exited'] == 1].count(),  # Number of customers who exited
+    df.Exited[df['Exited'] == 0].count()   # Number of customers who were retained
+]
 
-### Key Terms Explained
+# The explode parameter is used to slightly separate the 'Retained' slice from the pie chart for better visualization.
+slice_explode = (0, 0.1)  # No explode for 'Exited', and slight explode (0.1) for 'Retained'
 
-- **Churn**: The process of customers stopping their business with a company. In banking, this might mean closing accounts or significantly reducing their usage.
-- **Artificial Neural Network (ANN)**: A type of machine learning model inspired by the human brain, capable of recognizing complex patterns and relationships within data.
-- **Feature Engineering**: The process of creating new features or modifying existing ones to improve the performance of a machine learning model.
-- **H2O AutoML**: A platform that automates the process of building and tuning machine learning models, making it accessible even for those with limited machine learning expertise.
+# Creating a subplot with specific figure size
+figure1, axis1 = plt.subplots(figsize=(10, 8))
+
+# Plotting the pie chart
+axis1.pie(
+    pie_sizes,  # Sizes of the pie slices
+    explode=slice_explode,  # Explode setting
+    labels=pie_labels,  # Labels for the slices
+    autopct='%1.1f%%',  # Display the percentage value with one decimal place
+    shadow=True,  # Add a shadow to the pie chart for better visualization
+    startangle=90  # Start the pie chart from a 90-degree angle
+)
+
+# Ensuring the pie chart is drawn as a circle
+axis1.axis('equal')
+
+# Adding a title to the pie chart
+plt.title("Proportion of Customer Churned and Retained", size=20)
+
+# Displays the pie chart
+plt.show()
+```
+![Pie chart representing Churned and Retained](https://github.com/beshungh/Bank_Customer_Churn_Prediction/assets/135900689/8beaea3b-0cf4-4377-ad75-0c3fd148eb84)
+
+Retained(0 or Blue)  and Exited(0 or Orange)
+
+This pie chart shows the number of customers who have churned and the number of customers who have retained. 24.4% has exited the bank and 77.6 had retained.
+
+#### Plotting a 2x2 Grid of Subplots
+```python
+# Creating a 2x2 grid of subplots with a specified figure size
+figure, axes_array = plt.subplots(2, 2, figsize=(20, 12)) # Creates a 2x2 grid of subplots within the figure, setting the figure size to 20x12 inches.
+
+# Plotting a count plot for the 'Geography' column with a hue based on the 'Exited' column
+# This shows the distribution of customers across different geographies, split by whether they exited or not
+sns.countplot(x='Geography', hue='Exited', data=df, ax=axes_array[0][0]) # Places the plot in the first subplot of the grid.
+
+# Plotting a count plot for the 'Gender' column with a hue based on the 'Exited' column
+# This shows the distribution of customers based on gender, split by whether they exited or not
+sns.countplot(x='Gender', hue='Exited', data=df, ax=axes_array[0][1]) # Places the plot in the second subplot of the grid.
+
+# Plotting a count plot for the 'HasCrCard' column with a hue based on the 'Exited' column
+# This shows the distribution of customers based on whether they have a credit card, split by whether they exited or not
+sns.countplot(x='HasCrCard', hue='Exited', data=df, ax=axes_array[1][0]) # Places the plot in the third subplot of the grid.
+
+# Plotting a count plot for the 'IsActiveMember' column with a hue based on the 'Exited' column
+# This shows the distribution of customers based on their active membership status, split by whether they exited or not
+sns.countplot(x='IsActiveMember', hue='Exited', data=df, ax=axes_array[1][1]) # Places the plot in the fourth subplot of the grid.
+
+# Displaying the plots
+plt.show()
+```
+![2x2 Grid of Subplots with a specified Figure Size](https://github.com/beshungh/Bank_Customer_Churn_Prediction/assets/135900689/1a1cbc85-e3f2-4e7c-83b7-6f05b6579f07)
+
+1. Geography-Based Analysis and Recommendations
+
+###### Analysis:
+
+- France had the largest customer base among the three countries with approximately 6,000 customers. Despite having around 700 churned customers, the churn rate stands at     11.67%, which, while the highest in absolute numbers, is the lowest percentage-wise, indicating strong customer retention relative to the total number of customers.
+
+- Spain had a moderate number of customers, totaling 2,000, with 400 of them churning, resulting in a churn rate of 20%. This indicates that one in five customers is
+  churning, suggesting significant room for improvement in customer retention strategies.
+
+- Germany has the fewest customers, totaling 1,700, but the highest churn rate at 47.06%, with 800 customers churning. Nearly half of the customers in Germany are churning,   indicating a significant issue with customer retention that requires immediate attention.
+
+###### Recommendations:
+
+* For France, the bank should continue current customer retention strategies and explore opportunities for customer expansion while maintaining retention.The bank can 
+  continue offering loyalty programs like discounted loan rates and reward points for long-term customers. Additionally, they can explore new market segments by launching 
+  innovative products such as digital wallets and sustainable investment funds to attract younger demographics while still focusing on retaining their current customers 
+  through personalized financial advisory services.
+
+* For Spain, the bank should implement targeted retention programs to reduce the churn rate and conduct customer satisfaction surveys to identify and address pain 
+  points.These includes offering flexible loan repayment options and digital banking features like easy-to-use mobile apps. Also, the bank can conduct extensive customer 
+  satisfaction surveys to gather feedback on service quality, waiting times, and product offerings. Based on survey results, the bank can introduce improvements such as 
+  extended branch hours and enhanced online customer support to address identified pain points.
+
+* For Germany, the bank should conduct a thorough analysis to understand the high churn rate, develop and implement aggressive retention strategies, and improve customer 
+  service and engagement.Theses can be done through a detailed analysis to uncover reasons such as lack of personalized banking solutions and inefficient customer service. 
+  In response, they develop aggressive retention strategies like personalized banking plans tailored to small business needs, including lower transaction fees and dedicated 
+  account managers. Additionally, the bank should invests in customer service training programs and advanced CRM systems to improve overall customer engagement and 
+  satisfaction.
+
+2. Gender-Based Analysis and Recommendations
+
+###### Analysis:
+
+ The bank has more male customers (approximately 4,500) than female customers (approximately 3,500). However, the churn rate among female customers is higher, with about 
+ 1,100 female customers churning compared to 900 male customers. This results in a churn rate of 31.43% for female customers versus 20% for male customers, suggesting that 
+ female customers might be facing unique challenges or dissatisfaction that needs to be addressed.
+
+###### Recommendations:
+The bank should: 
+
+* investigate the reasons for higher churn among female customers through surveys and feedback with this, the bank can send out detailed surveys and feedback forms to 
+  female customers who have recently churned and those who are still active. Questions can focus on their experiences with the bank’s services, specific pain points, and 
+  suggestions for improvement.
+
+* Develop targeted initiatives to address the specific needs and preferences of female customers. This can be achieved by introducing savings accounts with higher interest 
+  rates, low-fee credit cards, or loan products specifically designed to support female entrepreneurs. Offering financial literacy workshops or investment seminars targeted 
+  at women can also help empower female customers and address any financial knowledge gaps.
+
+* Enhance customer support and engagement tailored for female customers.Hosting events and workshops that connect female customers with industry experts and successful 
+  female entrepreneurs can foster a sense of community and loyalty towards the bank.
+
+* Create a dedicated customer support team trained to handle inquiries and issues specific to female customers. This team can offer personalized financial advice, 
+  empathetic service, and quick resolution of issues, ensuring that female customers feel valued and supported.
+
+3. Credit Card Usage-Based Analysis and Recommendations
+
+###### Analysis:
+
+ Out of the total customer base, 5,500 customers hold credit cards, and among these, 1,600 have churned, resulting in a churn rate of approximately 29.09%. This is higher 
+ than the overall churn rates, indicating that credit card holders are more likely to churn.
+
+###### Recommendations:
+
+For Credit Card Holder Retention,the bank should:
+
+* Analyze the specific issues faced by credit card holders leading to higher churn. Example, the bank should Send surveys to churned credit card customers asking about 
+  their reasons for leaving. Key areas to investigate include interest rates, fees, customer service experiences, reward programs, and any specific incidents that led to 
+  their decision to churn. Also, analyze feedback from current credit card customers to identify ongoing pain points and areas for improvement.
+
+* Improve the benefits and services associated with credit card usage. The bank should intriduce and enhance cashback offers, travel rewards, and points-based systems that 
+  provide tangible benefits for using the credit card.They should ensure that these reward programs are competitive and clearly communicated to customers.
+
+* Use data analytics to identify patterns in credit card usage and tailor communication to individual customers. Sending personalized offers, such as higher rewards for 
+  categories they frequently spend on or special anniversary offers.
+
+4. Activity-Based Analysis and Recommendations
+
+###### Analysis:
+
+ Among the customers, 3,500 are considered inactive, with 1,200 of them churning, resulting in a churn rate of approximately 34.29%. In contrast, there are 4,300 active 
+ customers with 700 churning, leading to a churn rate of approximately 16.28%. This indicates that active customers are less likely to churn compared to inactive customers.
+
+###### Recommendations:
+
+For Activity-Based Retention the bank should:
+
+*  Implement re-engagement campaigns for inactive customers to reduce their high churn rate. This can be done by sending personalized emails, messages, or direct mail to 
+   inactive customers highlighting new features, products, or services. These communications can include special offers such as limited-time discounts or bonuses for 
+   reactivating their accounts. For instance, an email campaign might offer a $50 bonus for using the credit card within the next month.
+
+*  Provide incentives and personalized offers to encourage inactive customers to become active. Incentives like cashback, reward points, or lower fees for a specified 
+   period 
+   to inactive customers who start using their accounts again. For instance, a promotion could offer 5% cashback on purchases made with the bank's credit card for the next 
+   three months.
+
+*  Send regular, personalized updates to active customers about new products, services, and exclusive offers. This could include newsletters, app notifications, or social 
+   media updates tailored to their usage patterns and preferences.
+
+
+
+
