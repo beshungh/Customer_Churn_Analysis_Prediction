@@ -27,7 +27,7 @@ The project will be executed in the following stages:
 4. **Model Building using ANN**: Develop an Artificial Neural Network (ANN) model to predict customer churn.
 
 ### Data Analysis
-#### Plotting Pie Chart
+#### Plotting Pie Chart 
 
 ```python
 # Defining labels for the pie chart representing the two categories: 'Exited (Churned)' and 'Retained'
@@ -70,7 +70,7 @@ Retained(0 or Blue)  and Exited(0 or Orange)
 
 This pie chart shows the number of customers who have churned and the number of customers who have retained. 24.4% has exited the bank and 77.6 had retained.
 
-#### Plotting a 2x2 Grid of Subplots
+#### Plotting a 2x2 Grid of Subplots - Countplot
 ```python
 # Creating a 2x2 grid of subplots with a specified figure size
 figure, axes_array = plt.subplots(2, 2, figsize=(20, 12)) # Creates a 2x2 grid of subplots within the figure, setting the figure size to 20x12 inches.
@@ -193,6 +193,8 @@ For Activity-Based Retention the bank should:
 
 *  Send regular, personalized updates to active customers about new products, services, and exclusive offers. This could include newsletters, app notifications, or social 
    media updates tailored to their usage patterns and preferences.
+
+#### Plotting a 2x2 Grid of Subplots - Boxplot
 
 
 
