@@ -698,7 +698,6 @@ By focusing on the specific needs and challenges of customers in different regio
 customer feedback, the bank can improve customer satisfaction and reduce churn rates. The predictive model can be further refined and integrated into the bank's CRM system 
 to proactively identify at-risk customers and take timely actions to retain them.
 
-
-
+*[Table of Contents](#table-of-contents)*
 
 
