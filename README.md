@@ -634,10 +634,8 @@ accuracy = accuracy_score(y_test, y_pred) * 100
 print(f"Accuracy score is: {accuracy:.2f}%")
 ```
 
-### Findings
+### Findings and Recommendations
 
-
-### Recommendations
 
 
 ### Conclusion
