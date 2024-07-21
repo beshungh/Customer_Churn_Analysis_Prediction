@@ -6,14 +6,14 @@
 
 ## *Table of Contents*
 
-- *[Introduction](#project-summary)*
+- *[Introduction](#introduction)*
 - *[Project Timeline](#project-timeline)*
-- *[Data Analysis](#data-source)*
-- *[Data Preprocessing](#tools-used)*
-- *[Feature Engineering](#importing-csv-files-into-postgresql-using-python-script)*
-- *[Model Building](#setbacks-of-the-python-script)*
-- *[Findings And Recommendations](#entity-relationship-diagram)*
-- *[Conclusion](#creating-database-tables)*
+- *[Data Analysis](#data-analysis)*
+- *[Data Preprocessing](#data-preprocessing)*
+- *[Feature Engineering](#feature-engineering)*
+- *[Model Building](#model-building)*
+- *[Findings And Recommendations](#findings-and-recommendations)*
+- *[Conclusion](#conclusion)*
 
 ### Introduction
 Customer churn refers to the loss of clients or customers. Predicting customer churn helps businesses retain customers by identifying the signs early and taking action to prevent it. In this project, we use a dataset of bank customers to identify and visualize the key factors that contribute to customer churn and build a machine learning model that predicts whether a customer will churn.
@@ -320,4 +320,320 @@ The Bank should:
 
 * Focus on other demographic or behavioral factors for segmenting customers. Consider factors such as age, location, purchase history, and product usage patterns.
 
-  
+### Data Preprocessing
+#### Dropping Unnecessary Columns
+ Dropping these columns helps the model to focus on the features that are truly predictive of customer churn, improving both the performance and interpretability of the  
+ machine learning models.
+ - CustomerId: If included, the model might treat each customer ID as a unique and significant factor, which could confuse the model and lead to poor generalization.
+ - RowNumber: Similarly, the row number is just the sequence in which data is stored and carries no meaningful information about the customer.
+ - Surname: While surnames might suggest familial relations or regional information, in most cases, they do not provide actionable insights for churn prediction.
+```python
+# Dropping the 'CustomerId', 'RowNumber', and 'Surname' columns from the DataFrame 'df'
+# axis='columns' specifies that we're dropping columns (not rows)
+# inplace=True means the changes will be applied directly to the original DataFrame without returning a new DataFrame
+
+df.drop(['CustomerId','RowNumber','Surname'],axis='columns',inplace=True)
+```
+
+#### Encoding Categorical Variables
+ Label encoding is a common technique used to convert categorical data into a numerical format that can be more easily understood and processed by machine learning 
+ algorithms. Many algorithms require numerical input and cannot directly handle categorical data.
+
+ The reason Why I am performing label encoding is most machine learning models, such as logistic regression, support vector machines, and neural networks, require numerical 
+ input. They cannot process categorical data directly because they perform mathematical operations on the input data, which requires numerical values.
+ ```python
+# Replacing the values in the 'Gender' column: 'Male' with 1 and 'Female' with 0
+df['Gender'].replace({'Male': 1, 'Female': 0}, inplace=True)
+```
+
+#### One Hot Encoding method
+ In one-hot encoding, each category value is converted into a new binary column (or feature) where 1 indicates the presence of the category and 0 indicates the absence. 
+ This creates a binary matrix where each column corresponds to one category and each row corresponds to one observation which allows categorical data to be used more 
+ effectively in machine learning models, where numerical inputs are preferred.
+ ```python
+# Creating a new DataFrame 'df1' with one-hot encoded columns for the 'Geography' column
+"""
+pd.get_dummies: This function from the Pandas library is used to perform one-hot encoding.
+data=df: Specifies the DataFrame df as the data source.
+columns=['Geography']: Specifies the column(s) to be one-hot encoded. In this case, it's the 'Geography' column.
+"""
+df1 = pd.get_dummies(data=df, columns=['Geography'])
+
+# Displaying the first few rows of the new DataFrame 'df1'
+df1.head()
+```
+
+#### Scaling Features
+```python
+# Listing of variables to scale
+scale_var = ['Tenure','CreditScore','Age','Balance','NumOfProducts','EstimatedSalary']
+
+# Importing the MinMaxScaler module from scikit-learn library
+from sklearn.preprocessing import MinMaxScaler
+
+# Creating an instance of MinMaxScaler
+scaler = MinMaxScaler()
+
+# Scaling the specified columns (scale_var) in the DataFrame (df1)
+df1[scale_var] = scaler.fit_transform(df1[scale_var])
+
+df1.head()
+```
+- After scaling, the numerical columns are transformed. For example, CreditScore, Age, Tenure, Balance, NumOfProducts, and EstimatedSalary now have values between 0 and 1, 
+  where 0 represents the minimum value in the original column, and 1 represents the maximum value. The categorical columns remain unchanged.
+  For instance, CreditScore originally ranged from 350 to 850. After scaling, the minimum value becomes 0 and the maximum becomes 1, with other values scaled accordingly 
+  within that range.
+  This transformation makes the numerical features comparable and removes the potential bias introduced by differences in the scale of the original features. This 
+  preprocessing step is often performed to improve the performance and stability of machine learning models.
+
+### Feature Engineering
+Creating new features or modifying existing ones to improve the predictive power of the model
+```python
+# Making a new column BalanceSalaryRatio
+"""
+Upon analysis, It was observed that neither the balance nor the estimated salary alone had a significant impact on customer churn.To explore the combined effect, a ratio 
+of balance to estimated salary was calculated for each customer.
+A box plot of this ratio was created to assess its relationship with churn.
+"""
+# Calculating the balance to salary ratio and adding it as a new column 'BalanceSalaryRatio' in the DataFrame
+df['BalanceSalaryRatio'] = df['Balance'] / df['EstimatedSalary']
+
+# Creating a boxplot to visualize the distribution of balance to salary ratio for customers who churned and those who didn't
+# The x-axis represents the 'Exited' status, and the hue differentiates between churned and retained customers
+# Set the y-axis limit to -1 and 5 for better visualization
+sns.boxplot(y='BalanceSalaryRatio', x='Exited', hue='Exited', data=df)
+plt.ylim(-1, 5)  # Set the y-axis limit
+
+![BalanceSalaryRatio](https://github.com/user-attachments/assets/ca4db7f2-96a7-42dc-9d34-ebfa4324319c)
+
+###### Analysis:
+The box plot analysis indicates that customers with a balance-to-salary ratio around 2 are more likely to churn.
+
+###### Recommendations:
+
+The company should:
+
+* Develop personalized communication and engagement strategies for customers with a balance-to-salary ratio around 2.
+* Provide tailored financial advice or offers to improve their satisfaction and reduce the likelihood of churn.
+```
+
+```python
+# Calculating the tenure to age ratio and adding it as a new column 'TenureByAge' in the DataFrame
+"""
+df['TenureByAge']: Creates a new column in the DataFrame to store the calculated ratios.
+df['Tenure']: Accesses the Tenure column in the DataFrame.
+df['Age']: Accesses the Age column in the DataFrame.
+df['Tenure'] / df['Age']: Performs element-wise division to calculate the tenure to age.
+df['TenureByAge']: Creates a new column in the DataFrame to store the calculated ratios.
+"""
+df['TenureByAge'] = df['Tenure'] / df['Age'] # Performs element-wise division to calculate the tenure to age ratio.
+
+# Creating a boxplot to visualize the distribution of tenure to age ratio for customers who churned and those who didn't
+# The x-axis represents the 'Exited' status, and the hue differentiates between churned and retained customers
+# Set the y-axis limit to -1 and 1 for better visualization
+"""
+y='TenureByAge': The TenureByAge column will be on the y-axis.
+x='Exited': The Exited column will be on the x-axis.
+hue='Exited': Colors the boxes based on the Exited status.
+data=df: Specifies the DataFrame df as the data source
+"""
+sns.boxplot(y='TenureByAge', x='Exited', hue='Exited', data=df)
+plt.ylim(-1, 1)  # Set the y-axis limit
+
+# Display the plot
+plt.show()
+```
+
+![TenureByAge](https://github.com/user-attachments/assets/c8b25162-5752-478a-b2ac-5b7b90f407c2)
+
+###### Analysis:
+The analysis shows no significant relationship between the TenureByAge ratio and churn. Most customers have a TenureByAge ratio between 0.00 and 0.25, indicating minimal 
+variation.
+
+###### Recommendations:
+The company should:
+
+* Implement onboarding programs that emphasize long-term benefits and loyalty programs for younger customers with low tenure.
+* Offer rewards and recognition programs to reinforce their loyalty for older customers with long tenure.
+* Provide financial planning services that cater to their stage in life, such as retirement planning.
+
+### Model Building
+#### Train-Test Split
+Splitting the dataset into training and testing sets to evaluate the model's performance
+```python
+# Separating independent features (X) and dependent feature (y)
+"""
+X: Contains the independent features. It's created by dropping the 'Exited' column from the DataFrame df1.
+y: Contains the dependent feature, which is the 'Exited' column from the DataFrame df1.
+X = df1.drop('Exited', axis='columns'): This line creates a new DataFrame X by dropping the column labeled 'Exited' from the DataFrame df1. The parameter axis='columns' specifies that we want to drop a column (as opposed to dropping a row), and dropping by label ('columns') means we are specifying the name of the column to drop.
+"""
+X = df1.drop('Exited', axis='columns')  # Independent features (excluding the 'Exited' column)
+y = df1['Exited']  # Dependent feature (the 'Exited' column)
+
+# Importing the train_test_split function from scikit-learn
+# sklearn.model_selection is used to split the dataset into training and testing sets.
+
+from sklearn.model_selection import train_test_split
+
+# Splitting the data into training and testing sets
+# The test_size parameter specifies the proportion of the dataset to include in the test split (here, 20%)
+# The random_state parameter sets the random seed for reproducibility
+"""
+X_train: Contains the independent features for training.
+X_test: Contains the independent features for testing.
+y_train: Contains the dependent feature for training.
+y_test: Contains the dependent feature for testing.
+train_test_split(X, y, test_size=0.2, random_state=5): This function splits the dataset into training and testing sets.
+X: The independent features.
+y: The dependent feature.
+test_size=0.2: Specifies that 20% of the data will be used for testing, while 80% will be used for training.
+random_state=5: Sets the random seed to 5 for reproducibility, ensuring that the same random split is obtained each time the code is run.
+"""
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=5)
+```
+The ultimate goal of a machine learning model is to generalize well to unseen data. Splitting the dataset into training and testing sets helps ensure that the model is not 
+biased towards the specific instances in the training set and can make accurate predictions on new data.
+
+### Model Selection
+#### The Sequential model
+The Sequential model is a linear stack of layers in deep learning, particularly in the context of Keras, a high-level neural networks API written in Python and capable of 
+running on top of TensorFlow.
+##### The Sequential model is not appropriate when:
+* The model has multiple inputs or multiple outputs.
+* Any of the layers has multiple inputs or multiple outputs.
+* The need to do layer sharing.
+* Want non-linear topology, such as a residual connection or a multi-branch model.
+
+### Model Training 
+```python
+# Importing TensorFlow and Keras
+"""
+TensorFlow is the open-source machine learning library developed by Google, and Keras is an API that runs on top of TensorFlow, 
+providing a high-level interface for building and training neural networks.
+"""
+import tensorflow as tf
+from tensorflow import keras
+
+# Defining the model architecture
+"""
+The neural network model is defined using the Sequential API from Keras. This model consists of three layers:
+Input layer: Dense layer with 12 neurons and input shape (14,). This layer uses ReLU (Rectified Linear Unit) activation function.
+Hidden layer: Dense layer with 6 neurons and ReLU activation function.
+Output layer: Dense layer with 1 neuron and Sigmoid activation function. Sigmoid is used for binary classification tasks as it squashes the output between 0 and 1, making 
+it suitable for probability predictions.
+"""
+model = keras.Sequential([
+    keras.layers.Input(shape=(14,)),  # Correctly specifying input shape
+    keras.layers.Dense(12, activation='relu'),  # Input layer with 12 neurons, using ReLU activation
+    keras.layers.Dense(6, activation='relu'),  # Hidden layer with 6 neurons, using ReLU activation
+    keras.layers.Dense(1, activation='sigmoid')  # Output layer with 1 neuron, using Sigmoid activation for binary classification
+])
+
+# Compiling the model
+"""
+Before training, the model needs to be compiled. During compilation, i specified the optimizer, loss function, and metrics to be used during training.
+optimizer='adam': Adam optimizer, a popular optimization algorithm.
+loss='binary_crossentropy': Binary cross-entropy loss function, commonly used for binary classification tasks.
+metrics=['accuracy']: Accuracy metric will be monitored during training.
+"""
+model.compile(optimizer='adam',  # Optimizer algorithm
+              loss='binary_crossentropy',  # Loss function for binary classification
+              metrics=['accuracy'])  # Evaluation metric to monitor during training
+
+# Training the model
+"""
+The model is trained using the fit method. It takes the training data (X_train and y_train) and the number of epochs (how many times the model will see the entire training 
+dataset).
+"""
+model.fit(X_train, y_train, epochs=100)  # Training the model with X_train and y_train for 100 epochs
+```
+
+### Model Evaluation
+```python
+# Evaluating the trained model on the test data to assess its performance.
+# X_test: the input features of the test dataset
+# y_test: the corresponding true labels of the test dataset
+model.evaluate(X_test, y_test)
+```
+
+### Predictions 
+```python
+# making prediction using machine learning model
+"""model: This is your trained machine learning model.
+predict(): This method is used to make predictions based on the input data provided.
+X_test: This is the test dataset that you are using to evaluate the model's performance.
+yp: This variable stores the predictions made by the model.
+"""
+yp = model.predict(X_test)
+yp
+```
+
+### Checking Accuracy
+```python
+# Importing the confusion_matrix and classification_report functions from sklearn.metrics
+from sklearn.metrics import confusion_matrix, classification_report
+
+# Printing the classification report to evaluate the performance of the classification model
+# y_test: ground truth (correct) labels
+# y_pred: predicted labels by the classification model
+print(classification_report(y_test, y_pred))
+```
+```python
+# Importing seaborn as sn for data visualization and TensorFlow for computing the confusion matrix
+import seaborn as sn
+import tensorflow as tf
+import matplotlib.pyplot as plt  # Import matplotlib for plotting
+
+# Compute the confusion matrix using TensorFlow
+# labels=y_test: ground truth (correct) labels
+# predictions=y_pred: predicted labels by the classification model
+cm = tf.math.confusion_matrix(labels=y_test, predictions=y_pred)
+
+# Creating a plot with a specified size
+plt.figure(figsize=(10, 7))
+
+# Using seaborn to create a heatmap for the confusion matrix
+# cm: the confusion matrix to be visualized
+# annot=True: write the data value in each cell
+# fmt='d': format the annotations as integers
+sn.heatmap(cm, annot=True, fmt='d')
+
+# Label the x-axis as 'Predicted'
+plt.xlabel('Predicted')
+
+# Label the y-axis as 'Truth'
+plt.ylabel('Truth')
+
+# Display the plot
+plt.show()
+```
+![confusion matrix](https://github.com/user-attachments/assets/1b764aa7-2ca7-4416-a108-4e293dbb36c1)
+
+```python
+# Importing accuracy_score from sklearn.metrics
+from sklearn.metrics import accuracy_score
+```
+```python
+# Printing the accuracy score
+"""
+Accuracy score is:This is a string that will be printed as is.
+
+accuracy_score(y_test,y_pred): This part calculates the accuracy score. accuracy_score is a function from a machine learning library like scikit-learn. It takes two parameters:
+
+y_test: This is the true labels or target values of the test dataset.
+
+y_pred: This is the predicted labels or target values generated by a machine learning model for the test dataset.
+
+*100: This multiplies the accuracy score by 100 to convert it into a percentage. The accuracy score is typically a fraction or decimal between 0 and 1, and multiplying by 100 converts it into a percentage.
+
+The:.2f inside the curly braces specifies that the accuracy should be displayed as a floating-point number with two decimal places.
+
+"%": This is another string, representing the percentage sign that will be printed after the accuracy score.
+"""
+accuracy = accuracy_score(y_test, y_pred) * 100
+print(f"Accuracy score is: {accuracy:.2f}%")
+```
+
+
+
+
