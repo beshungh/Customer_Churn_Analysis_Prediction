@@ -6,9 +6,9 @@
 
 ## *Table of Contents*
 
-- *[Introduction](#project-summary)*
+- *[Introduction](#introduction)*
 - *[Project Timeline](#project-timeline)*
-- *[Data Analysis](#data-source)*
+- *[Data Analysis](#data-analysis)*
 - *[Data Preprocessing](#tools-used)*
 - *[Feature Engineering](#importing-csv-files-into-postgresql-using-python-script)*
 - *[Model Building](#setbacks-of-the-python-script)*
