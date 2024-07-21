@@ -12,7 +12,7 @@
 - *[Data Preprocessing](#data-preprocessing)*
 - *[Feature Engineering](#feature-engineering)*
 - *[Model Building](#model-building)*
-- *[Findings And Recommendations](#findings-and-recommendations)*
+- *[Findings and Recommendations](#findings-and-recommendations)*
 - *[Conclusion](#conclusion)*
 
 ### Introduction
@@ -66,7 +66,7 @@ plt.show()
 ```
 ![Pie chart representing Churned and Retained](https://github.com/beshungh/Bank_Customer_Churn_Prediction/assets/135900689/8beaea3b-0cf4-4377-ad75-0c3fd148eb84)
 
-Retained(0 or Blue)  and Exited(0 or Orange)
+Exited(1 or Blue) and Retained(0 or Orange).
 
 This pie chart shows the number of customers who have churned and the number of customers who have retained. 24.4% has exited the bank and 77.6 had retained.
 
@@ -634,6 +634,70 @@ accuracy = accuracy_score(y_test, y_pred) * 100
 print(f"Accuracy score is: {accuracy:.2f}%")
 ```
 
+### Findings and Recommendations
+Based on the analysis and the predictive model built, the following findings and recommendations are provided to help the bank improve customer retention:
 
+*Findings*
+
+1. *Customer Distribution and Churn Rates:*
+
+    * France:
+
+         * Total Customers: Approximately 6,000
+         * Churn Rate: 11.67%
+         * Analysis: Despite having the largest customer base, France has the lowest churn rate. This indicates effective customer retention strategies.
+     * Spain:
+
+         * Total Customers: 2,000
+         * Churn Rate: 20%
+         * Analysis: Spain has a moderate churn rate, indicating that one in five customers churns. There is room for improvement in customer retention efforts.
+     * Germany:
+
+         * Total Customers: 1,700
+         * Churn Rate: 47.06%
+         * Analysis: Germany has the highest churn rate, with nearly half of the customers churning. This signifies a significant issue with customer satisfaction and 
+           retention.
+2. *Key Predictive Features:*
+
+* Credit Score: Customers with lower credit scores are more likely to churn.
+* Age: Older customers tend to have a higher likelihood of churning.
+* Geography: Churn rates vary significantly by region, with Germany having the highest churn rate.
+* Balance: Customers with zero balance are more likely to churn.
+
+*Recommendations*
+1. For France:
+
+* Maintain and enhance current customer retention strategies.
+* Explore opportunities for customer expansion while focusing on retention.
+
+2. For Spain:
+
+* Implement targeted retention programs to address the 20% churn rate.
+* Conduct customer satisfaction surveys to identify pain points and address them.
+
+3. For Germany:
+
+* Conduct a thorough analysis to understand the high churn rate.
+* Develop and implement aggressive retention strategies, focusing on improving customer service and engagement.
+* Introduce loyalty programs and personalized services to enhance customer satisfaction.
+
+4. General Recommendations:
+
+* Loyalty Programs: Develop and promote loyalty programs to reward long-term customers.
+* Personalized Services: Offer personalized services based on customer preferences and behavior to increase engagement.
+* Regular Monitoring: Regularly monitor customer feedback and churn metrics to identify trends and address issues promptly.
+* Customer Feedback: Actively seek and analyze customer feedback to continuously improve services and address customer concerns.
+
+
+### Conclusion
+
+The Bank Customer Churn Prediction project successfully utilized data science and machine learning techniques to analyze customer churn and build a predictive model. The 
+analysis revealed significant insights into the factors influencing customer churn and provided actionable recommendations to enhance customer retention strategies.
+
+By focusing on the specific needs and challenges of customers in different regions, implementing targeted retention programs, and continuously monitoring and addressing 
+customer feedback, the bank can improve customer satisfaction and reduce churn rates. The predictive model can be further refined and integrated into the bank's CRM system 
+to proactively identify at-risk customers and take timely actions to retain them.
+
+*[Table of Contents](#table-of-contents)*
 
 
