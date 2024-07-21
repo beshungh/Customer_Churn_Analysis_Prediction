@@ -66,7 +66,7 @@ plt.show()
 ```
 ![Pie chart representing Churned and Retained](https://github.com/beshungh/Bank_Customer_Churn_Prediction/assets/135900689/8beaea3b-0cf4-4377-ad75-0c3fd148eb84)
 
-Retained(0 or Blue)  and Exited(0 or Orange)
+Exited(1 or Blue) and Retained(0 or Orange).
 
 This pie chart shows the number of customers who have churned and the number of customers who have retained. 24.4% has exited the bank and 77.6 had retained.
 
