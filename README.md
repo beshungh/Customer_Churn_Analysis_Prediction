@@ -136,7 +136,7 @@ plt.show()
 ###### Recommendations:
 The bank should: 
 
-* investigate the reasons for higher churn among female customers through surveys and feedback with this, the bank can send out detailed surveys and feedback forms to 
+* Investigate the reasons for higher churn among female customers through surveys and feedback with this, the bank can send out detailed surveys and feedback forms to 
   female customers who have recently churned and those who are still active. Questions can focus on their experiences with the bank’s services, specific pain points, and 
   suggestions for improvement.
 
