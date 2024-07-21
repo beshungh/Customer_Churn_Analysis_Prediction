@@ -9,7 +9,7 @@
 - *[Introduction](#introduction)*
 - *[Project Timeline](#project-timeline)*
 - *[Data Analysis](#data-analysis)*
-- *[Data Preprocessing](#tools-used)*
+- *[Data Preprocessing](#data-preprocessing)*
 - *[Feature Engineering](#importing-csv-files-into-postgresql-using-python-script)*
 - *[Model Building](#setbacks-of-the-python-script)*
 - *[Findings And Recommendations](#entity-relationship-diagram)*
@@ -320,4 +320,69 @@ The Bank should:
 
 * Focus on other demographic or behavioral factors for segmenting customers. Consider factors such as age, location, purchase history, and product usage patterns.
 
-  
+### Data Preprocessing
+#### Dropping Unnecessary Columns
+ Dropping these columns helps the model to focus on the features that are truly predictive of customer churn, improving both the performance and interpretability of the  
+ machine learning models.
+ - CustomerId: If included, the model might treat each customer ID as a unique and significant factor, which could confuse the model and lead to poor generalization.
+ - RowNumber: Similarly, the row number is just the sequence in which data is stored and carries no meaningful information about the customer.
+ - Surname: While surnames might suggest familial relations or regional information, in most cases, they do not provide actionable insights for churn prediction.
+```python
+# Dropping the 'CustomerId', 'RowNumber', and 'Surname' columns from the DataFrame 'df'
+# axis='columns' specifies that we're dropping columns (not rows)
+# inplace=True means the changes will be applied directly to the original DataFrame without returning a new DataFrame
+
+df.drop(['CustomerId','RowNumber','Surname'],axis='columns',inplace=True)
+```
+
+#### Encoding Categorical Variables
+ Label encoding is a common technique used to convert categorical data into a numerical format that can be more easily understood and processed by machine learning 
+ algorithms. Many algorithms require numerical input and cannot directly handle categorical data.
+
+ The reason Why I am performing label encoding is most machine learning models, such as logistic regression, support vector machines, and neural networks, require numerical 
+ input. They cannot process categorical data directly because they perform mathematical operations on the input data, which requires numerical values.
+ ```python
+# Replacing the values in the 'Gender' column: 'Male' with 1 and 'Female' with 0
+df['Gender'].replace({'Male': 1, 'Female': 0}, inplace=True)
+```
+
+### One Hot Encoding method
+ In one-hot encoding, each category value is converted into a new binary column (or feature) where 1 indicates the presence of the category and 0 indicates the absence. 
+ This creates a binary matrix where each column corresponds to one category and each row corresponds to one observation which allows categorical data to be used more 
+ effectively in machine learning models, where numerical inputs are preferred.
+ ```python
+# Creating a new DataFrame 'df1' with one-hot encoded columns for the 'Geography' column
+"""
+pd.get_dummies: This function from the Pandas library is used to perform one-hot encoding.
+data=df: Specifies the DataFrame df as the data source.
+columns=['Geography']: Specifies the column(s) to be one-hot encoded. In this case, it's the 'Geography' column.
+"""
+df1 = pd.get_dummies(data=df, columns=['Geography'])
+
+# Displaying the first few rows of the new DataFrame 'df1'
+df1.head()
+```
+
+### Scaling Features
+```python
+# Listing of variables to scale
+scale_var = ['Tenure','CreditScore','Age','Balance','NumOfProducts','EstimatedSalary']
+
+# Importing the MinMaxScaler module from scikit-learn library
+from sklearn.preprocessing import MinMaxScaler
+
+# Creating an instance of MinMaxScaler
+scaler = MinMaxScaler()
+
+# Scaling the specified columns (scale_var) in the DataFrame (df1)
+df1[scale_var] = scaler.fit_transform(df1[scale_var])
+
+df1.head()
+```
+- After scaling, the numerical columns are transformed. For example, CreditScore, Age, Tenure, Balance, NumOfProducts, and EstimatedSalary now have values between 0 and 1, 
+  where 0 represents the minimum value in the original column, and 1 represents the maximum value. The categorical columns remain unchanged.
+  For instance, CreditScore originally ranged from 350 to 850. After scaling, the minimum value becomes 0 and the maximum becomes 1, with other values scaled accordingly 
+  within that range.
+  This transformation makes the numerical features comparable and removes the potential bias introduced by differences in the scale of the original features. This 
+  preprocessing step is often performed to improve the performance and stability of machine learning models.
+
