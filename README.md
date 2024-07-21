@@ -12,7 +12,8 @@
 - *[Data Preprocessing](#data-preprocessing)*
 - *[Feature Engineering](#feature-engineering)*
 - *[Model Building](#model-building)*
-- *[Findings And Recommendations](#findings-and-recommendations)*
+- *[Findings](#findings)*
+- *[Recommendations](#recommendations)*
 - *[Conclusion](#conclusion)*
 
 ### Introduction
