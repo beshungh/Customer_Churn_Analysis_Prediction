@@ -1,4 +1,4 @@
-# Bank Customer Churn Analysis and Prediction
+# Customer Churn Analysis and Prediction
 
 ### Project Overview
  The aim of this project is to predict customer churn for a bank using data analysis and machine learning techniques. This demonstrates the entire process, including data 
@@ -195,7 +195,129 @@ For Activity-Based Retention the bank should:
    media updates tailored to their usage patterns and preferences.
 
 #### Plotting a 2x2 Grid of Subplots - Boxplot
+```python
+# Creating a 3x2 grid of subplots with a specified figure size
+figure, axes_array = plt.subplots(3, 2, figsize=(20, 12))
 
+# Plotting a boxplot for the 'CreditScore' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of credit scores split by whether the customer exited or not
+sns.boxplot(y='CreditScore', x='Exited', hue='Exited', data=df, ax=axes_array[0][0])
+axes_array[0][0].set_title('Credit Score vs Exited')
 
+# Plotting a boxplot for the 'Age' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of age split by whether the customer exited or not
+sns.boxplot(y='Age', x='Exited', hue='Exited', data=df, ax=axes_array[0][1])
+axes_array[0][1].set_title('Age vs Exited')
 
+# Plotting a boxplot for the 'Tenure' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of tenure split by whether the customer exited or not
+sns.boxplot(y='Tenure', x='Exited', hue='Exited', data=df, ax=axes_array[1][0])
+axes_array[1][0].set_title('Tenure vs Exited')
 
+# Plotting a boxplot for the 'Balance' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of balance split by whether the customer exited or not
+sns.boxplot(y='Balance', x='Exited', hue='Exited', data=df, ax=axes_array[1][1])
+axes_array[1][1].set_title('Balance vs Exited')
+
+# Plotting a boxplot for the 'NumOfProducts' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of the number of products split by whether the customer exited or not
+sns.boxplot(y='NumOfProducts', x='Exited', hue='Exited', data=df, ax=axes_array[2][0])
+axes_array[2][0].set_title('Number of Products vs Exited')
+
+# Plotting a boxplot for the 'EstimatedSalary' column with 'Exited' as the x-axis, and use 'Exited' for hue
+# This shows the distribution of estimated salary split by whether the customer exited or not
+sns.boxplot(y='EstimatedSalary', x='Exited', hue='Exited', data=df, ax=axes_array[2][1])
+axes_array[2][1].set_title('Estimated Salary vs Exited')
+
+# Adjusting layout to prevent overlap
+plt.tight_layout()
+
+# Displaying the plots
+plt.show()
+```
+![Plotting a 2x2 Grid of Subplots - Boxplot](https://github.com/user-attachments/assets/8986f100-8ae5-468a-9688-2986d3f195d8)
+
+Credit Score-Based Analysis and Recommendations
+
+###### Analysis:
+- The analysis indicates that there is not much difference in churn rates between customers with different credit scores. This suggests that credit score is not a 
+  significant factor in determining whether a customer will churn or not.
+
+###### Recommendations:
+
+For Credit Score-Based Retention, the bank should:
+
+* Focus retention efforts on other more impactful factors since credit score is not a significant factor in churn, 
+* Continue monitoring credit scores to ensure they do not become a significant factor in the future.
+
+Age-Based Analysis and Recommendations
+
+###### Analysis:
+- The age-based analysis shows that older customers, particularly those above 40 years of age, are more likely to churn. In contrast, customers aged between 30 and 40 are 
+  less likely to leave the bank. This suggests that age is a significant factor in customer retention, with older customers exhibiting higher churn rates.
+
+###### Recommendations:
+
+For Age-Based Retention, the Bank should:
+
+* Develop specific strategies to retain older customers, who are more likely to churn.
+* Consider offering age-specific incentives, services, and support to better meet the needs of older customers.
+* Enhance engagement and communication efforts with older customers to improve their satisfaction and loyalty.
+
+Tenure-Based Analysis and Recommendations
+
+###### Analysis:
+- The tenure-based analysis reveals that customers who have been with the bank for 7 years and above (oldest customers) are more likely to churn. Similarly, new members who 
+  have been with the bank for a year or two are also more likely to churn. In contrast, customers who have been with the bank for an average of 4 to 6 years are less likely 
+  to leave. This suggests that both new and long-term customers are at higher risk of churn compared to mid-tenure customers.
+
+###### Recommendations: 
+
+For Tenure-Based Retention, the bank should:
+
+* Develop strategies to better retain both new and long-term customers, who are at higher risk of churn.
+* Implement onboarding programs and personalized support for new customers to enhance their early experience.
+* Recognize and reward long-term customers to maintain their loyalty and reduce the risk of churn.
+* Focus on maintaining the satisfaction and engagement of mid-tenure customers who show lower churn rates.
+
+Balance-Based Analysis and Recommendation
+
+###### Analysis:
+- The balance-based analysis indicates that customers with lower balances (0 to 90,000) are less likely to churn. Conversely, customers with higher balances (50,000 to 
+  140,000) are more likely to churn. This suggests that both ends of the balance spectrum—those with very low and very high balances—are at higher risk of churn, whereas 
+  customers with moderate balances tend to remain with the bank.
+
+###### Recommendations: 
+
+The Bank should:
+
+* Provide personalized financial planning services to help them improve their financial health.
+* Provide exclusive benefits or perks for maintaining high balances, such as premium banking services or VIP treatment.
+* Implement proactive communication to keep them informed about relevant products or services.
+* Develop programs to help customers optimize their account balances, such as balance transfer promotions or consolidation options.
+
+Number of Product-Based Analysis and Recommendations
+
+###### Analysis:
+The analysis indicates that there is not much difference in churn rates between customers with number of products.
+This suggests that number of product is not a significant factor in determining whether a customer will churn or not. 
+
+###### Recommendations: 
+
+The Bank should:
+
+* Explore innovative approaches to differentiate products and services in a competitive market landscape.
+
+Estimated Salary-Based Analysis and Recommendations
+
+###### Analysis:
+This analysis indicates that there is not much difference in churn rates between customers with estimated salary.
+This suggests that estimated salary is not a significant factor in determining whether a customer will churn or not. 
+
+###### Recommendations: 
+
+The Bank should:
+
+* Focus on other demographic or behavioral factors for segmenting customers. Consider factors such as age, location, purchase history, and product usage patterns.
+
+  
